@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Typing Replay with Multi-line Support</title>
+    <title>Typing Replay with Cursor and Highlight</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -29,11 +29,26 @@
             min-height: 100px; /* Adjust height for multiple lines */
             width: 300px;
             white-space: pre-wrap; /* Ensures new lines and spaces are preserved in replay */
+            position: relative;
+        }
+        .blinking-cursor {
+            display: inline-block;
+            width: 2px;
+            background-color: black;
+            animation: blink 0.7s steps(1) infinite;
+            vertical-align: text-bottom;
+        }
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+        .highlight {
+            background-color: yellow;
+            transition: background-color 0.5s ease;
         }
     </style>
 </head>
 <body>
-    <h1>Typing Replay with Multi-line Support</h1>
+    <h1>Typing Replay with Cursor and Highlight</h1>
     <textarea id="textField" placeholder="Type something..."></textarea>
     <button id="submitBtn">Submit</button>
     <div id="replayArea"></div>
@@ -55,14 +70,38 @@
         });
 
         submitBtn.addEventListener('click', function() {
-            const typingSpeed = 100; // Speed of replay in milliseconds
-            replayArea.textContent = ''; // Clear previous replay
-
+            const typingSpeed = 150; // Speed of replay in milliseconds
+            replayArea.innerHTML = ''; // Clear previous replay
             let i = 0;
+
+            // Create the cursor element
+            let cursor = document.createElement('span');
+            cursor.classList.add('blinking-cursor');
+            replayArea.appendChild(cursor);
+
             function replayTyping() {
                 if (i < actions.length) {
                     const action = actions[i];
-                    replayArea.textContent = action.text;
+                    replayArea.innerHTML = ''; // Clear the replay area for new content
+                    let currentText = action.text.split(''); // Split text into individual characters
+                    currentText.forEach((char, index) => {
+                        let span = document.createElement('span');
+                        span.textContent = char;
+                        replayArea.appendChild(span);
+                    });
+
+                    // Highlight the last added/modified character
+                    let highlightChar = replayArea.lastChild;
+                    if (highlightChar) {
+                        highlightChar.classList.add('highlight');
+                        setTimeout(() => {
+                            highlightChar.classList.remove('highlight');
+                        }, 500); // Remove highlight after 500ms
+                    }
+
+                    // Move the cursor to the end of the current text
+                    replayArea.appendChild(cursor);
+
                     i++;
                     setTimeout(replayTyping, typingSpeed);
                 }
