@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Typing Replay with Cursor and Mid-line Highlight</title>
+    <title>Typing Replay with Save Functionality</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -48,14 +48,16 @@
     </style>
 </head>
 <body>
-    <h1>Typing Replay with Cursor and Mid-line Highlight</h1>
+    <h1>Typing Replay with Save Functionality</h1>
     <textarea id="textField" placeholder="Type something..."></textarea>
     <button id="submitBtn">Submit</button>
+    <button id="saveBtn">Save Recording</button>
     <div id="replayArea"></div>
 
     <script>
         const textField = document.getElementById('textField');
         const submitBtn = document.getElementById('submitBtn');
+        const saveBtn = document.getElementById('saveBtn');
         const replayArea = document.getElementById('replayArea');
 
         let actions = []; // Array to store actions
@@ -82,7 +84,6 @@
         }
 
         submitBtn.addEventListener('click', function() {
-            console.log(actions)
             const typingSpeed = 150; // Speed of replay in milliseconds
             replayArea.innerHTML = ''; // Clear previous replay
 
@@ -124,6 +125,26 @@
             // Start replay
             replayTyping();
         });
+
+        // Save the actions and final text to a file
+        saveBtn.addEventListener('click', function() {
+            const finalText = textField.value;
+            const recordingDetails = JSON.stringify(actions, null, 2); // Pretty-print the actions as JSON
+
+            // Create downloadable files for final text and recording details
+            saveToFile('final_text.txt', finalText);
+            saveToFile('recording_details.json', recordingDetails);
+        });
+
+        function saveToFile(filename, content) {
+            const blob = new Blob([content], { type: 'text/plain' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
     </script>
 </body>
 </html>
