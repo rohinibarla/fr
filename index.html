@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Typing Replay with Cursor and Highlight</title>
+    <title>Typing Replay with Cursor and Mid-line Highlight</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -48,7 +48,7 @@
     </style>
 </head>
 <body>
-    <h1>Typing Replay with Cursor and Highlight</h1>
+    <h1>Typing Replay with Cursor and Mid-line Highlight</h1>
     <textarea id="textField" placeholder="Type something..."></textarea>
     <button id="submitBtn">Submit</button>
     <div id="replayArea"></div>
@@ -59,19 +59,33 @@
         const replayArea = document.getElementById('replayArea');
 
         let actions = []; // Array to store actions
+        let previousText = ''; // To track previous text
 
         // Capture every keystroke and store in actions
         textField.addEventListener('input', function(event) {
             const currentText = textField.value;
-            actions.push({
+            const action = {
                 text: currentText,
+                position: getModifiedPosition(previousText, currentText),
                 time: Date.now()
-            });
+            };
+            actions.push(action);
+            previousText = currentText;
         });
 
+        function getModifiedPosition(oldText, newText) {
+            let pos = 0;
+            while (pos < oldText.length && pos < newText.length && oldText[pos] === newText[pos]) {
+                pos++;
+            }
+            return pos;
+        }
+
         submitBtn.addEventListener('click', function() {
+            console.log(actions)
             const typingSpeed = 150; // Speed of replay in milliseconds
             replayArea.innerHTML = ''; // Clear previous replay
+
             let i = 0;
 
             // Create the cursor element
@@ -83,21 +97,21 @@
                 if (i < actions.length) {
                     const action = actions[i];
                     replayArea.innerHTML = ''; // Clear the replay area for new content
-                    let currentText = action.text.split(''); // Split text into individual characters
+
+                    // Split text into individual characters
+                    let currentText = action.text.split('');
                     currentText.forEach((char, index) => {
                         let span = document.createElement('span');
                         span.textContent = char;
+                        if (index === action.position) {
+                            // Highlight the modified character
+                            span.classList.add('highlight');
+                            setTimeout(() => {
+                                span.classList.remove('highlight');
+                            }, 500); // Remove highlight after 500ms
+                        }
                         replayArea.appendChild(span);
                     });
-
-                    // Highlight the last added/modified character
-                    let highlightChar = replayArea.lastChild;
-                    if (highlightChar) {
-                        highlightChar.classList.add('highlight');
-                        setTimeout(() => {
-                            highlightChar.classList.remove('highlight');
-                        }, 500); // Remove highlight after 500ms
-                    }
 
                     // Move the cursor to the end of the current text
                     replayArea.appendChild(cursor);
