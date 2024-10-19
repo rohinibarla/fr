@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Typing Replay</title>
+    <title>Typing Replay with Edits</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -26,7 +26,7 @@
     </style>
 </head>
 <body>
-    <h1>Typing Replay Example</h1>
+    <h1>Typing Replay with Edits</h1>
     <input type="text" id="textField" placeholder="Type something...">
     <button id="submitBtn">Submit</button>
     <div id="replayArea"></div>
@@ -35,24 +35,34 @@
         const textField = document.getElementById('textField');
         const submitBtn = document.getElementById('submitBtn');
         const replayArea = document.getElementById('replayArea');
-        
-        submitBtn.addEventListener('click', function() {
-            const text = textField.value;
-            textField.value = ''; // Clear the text field
-            replayArea.textContent = ''; // Clear previous replay
-            
-            let i = 0;
-            const typingSpeed = 100; // Speed of typing in milliseconds
 
-            function typeLetter() {
-                if (i < text.length) {
-                    replayArea.textContent += text.charAt(i);
+        let actions = []; // Array to store actions
+
+        // Capture every keystroke and store in actions
+        textField.addEventListener('input', function(event) {
+            const currentText = textField.value;
+            actions.push({
+                text: currentText,
+                time: Date.now()
+            });
+        });
+
+        submitBtn.addEventListener('click', function() {
+            const typingSpeed = 100; // Speed of replay in milliseconds
+            replayArea.textContent = ''; // Clear previous replay
+
+            let i = 0;
+            function replayTyping() {
+                if (i < actions.length) {
+                    const action = actions[i];
+                    replayArea.textContent = action.text;
                     i++;
-                    setTimeout(typeLetter, typingSpeed);
+                    setTimeout(replayTyping, typingSpeed);
                 }
             }
 
-            typeLetter();
+            // Start replay
+            replayTyping();
         });
     </script>
 </body>
