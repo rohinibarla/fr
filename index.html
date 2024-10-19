@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Typing Replay with Edits</title>
+    <title>Typing Replay with Multi-line Support</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -15,19 +15,26 @@
             padding: 10px;
             width: 300px;
         }
+        #textField {
+            height: 100px; /* Adjust height to fit multiple lines */
+            resize: none; /* Prevents resizing */
+            overflow-wrap: break-word; /* Ensures long words break and wrap */
+            white-space: pre-wrap; /* Ensures Enter key creates a new line */
+        }
         #replayArea {
             margin-top: 20px;
             font-size: 18px;
             padding: 10px;
             border: 1px solid #ccc;
-            min-height: 50px;
+            min-height: 100px; /* Adjust height for multiple lines */
             width: 300px;
+            white-space: pre-wrap; /* Ensures new lines and spaces are preserved in replay */
         }
     </style>
 </head>
 <body>
-    <h1>Typing Replay with Edits</h1>
-    <input type="text" id="textField" placeholder="Type something...">
+    <h1>Typing Replay with Multi-line Support</h1>
+    <textarea id="textField" placeholder="Type something..."></textarea>
     <button id="submitBtn">Submit</button>
     <div id="replayArea"></div>
 
