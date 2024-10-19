@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typing Replay</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #textField, #submitBtn {
+            display: block;
+            margin-bottom: 10px;
+            padding: 10px;
+            width: 300px;
+        }
+        #replayArea {
+            margin-top: 20px;
+            font-size: 18px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            min-height: 50px;
+            width: 300px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Typing Replay Example</h1>
+    <input type="text" id="textField" placeholder="Type something...">
+    <button id="submitBtn">Submit</button>
+    <div id="replayArea"></div>
+
+    <script>
+        const textField = document.getElementById('textField');
+        const submitBtn = document.getElementById('submitBtn');
+        const replayArea = document.getElementById('replayArea');
+        
+        submitBtn.addEventListener('click', function() {
+            const text = textField.value;
+            textField.value = ''; // Clear the text field
+            replayArea.textContent = ''; // Clear previous replay
+            
+            let i = 0;
+            const typingSpeed = 100; // Speed of typing in milliseconds
+
+            function typeLetter() {
+                if (i < text.length) {
+                    replayArea.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(typeLetter, typingSpeed);
+                }
+            }
+
+            typeLetter();
+        });
+    </script>
+</body>
+</html>
